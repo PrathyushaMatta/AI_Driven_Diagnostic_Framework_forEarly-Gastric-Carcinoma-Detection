@@ -1,0 +1,22 @@
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+env/
+venv/
+
+# Flask uploads and database
+static/uploads/
+*.db
+*.sqlite3
+
+# ML model weights
+*.pth
+
+# OS-specific
+.DS_Store
+
+# VSCode settings (optional)
+.vscode/

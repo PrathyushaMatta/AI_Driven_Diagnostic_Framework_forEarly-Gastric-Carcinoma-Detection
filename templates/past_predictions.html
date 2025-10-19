@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="predictions-container">
+    <h2>Your Past Predictions</h2>
+
+    {% if predictions %}
+        <div class="table-wrapper">
+            <table class="predictions-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Family History</th>
+                        <th>Image Name</th>
+                        <th>Prediction</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in predictions %}
+                        <tr>
+                            <td>{{ (p.timestamp + timedelta(hours=5, minutes=30)).strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ p.name }}</td>
+                            <td>{{ p.age }}</td>
+                            <td>{{ p.family_history }}</td>
+                            <td>{{ p.filename }}</td>
+                            <td>{{ p.prediction }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p style="text-align: center;">No past predictions found.</p>
+    {% endif %}
+
+    <div class="back-btn-wrapper">
+        <a href="{{ url_for('prediction_page') }}">
+            <button class="btn">← Back to Prediction Page</button>
+        </a>
+    </div>
+</div>
+
+{% endblock %}

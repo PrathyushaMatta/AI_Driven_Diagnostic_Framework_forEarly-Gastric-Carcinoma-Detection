@@ -1,0 +1,218 @@
+/* === Global Styles === */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-image: url('../images/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    color: #f0f0f0;
+}
+
+/* === Navbar === */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(20, 20, 20, 0.7);
+    padding: 15px 30px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #ff6b81;
+}
+
+.navbar a {
+    color: #f0f0f0;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    margin-left: auto;
+}
+
+.nav-links a {
+    color: #f0f0f0;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: bold;
+}
+
+
+/* === Title on Home Page === */
+.title-left {
+    position: absolute;
+    top: 120px;
+    left: 60px;
+    font-size: 54px;
+    font-weight: bold;
+    color: white;
+    padding: 120px 25px;
+    border-radius: 10px;
+}
+
+/* === Form Container === */
+.container {
+    max-width: 400px;
+    margin: 60px auto;
+    padding: 30px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    box-shadow: 0 0 10px #000;
+}
+
+/* === Form Elements === */
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.title-left {
+    animation: fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateX(-50px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+
+form label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+form input[type="text"],
+form input[type="password"],
+form input[type="email"],
+form input[type="file"],
+form input[type="number"],
+form select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #222;
+    color: #fff;
+}
+
+
+button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #ff6b81;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #e0556d;
+}
+
+/* === Links and Text === */
+p {
+    text-align: center;
+    margin-top: 15px;
+}
+
+p a {
+    color: #00bfff;
+    text-decoration: none;
+}
+
+p a:hover {
+    text-decoration: underline;
+}
+
+/* === Prediction Image === */
+img {
+    display: block;
+    margin: 20px auto;
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+/* === History List === */
+ul {
+    margin-top: 20px;
+    padding-left: 20px;
+}
+
+/* === Past Predictions Page Styles === */
+.predictions-container {
+    max-width: 90%;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    box-shadow: 0 0 10px #000;
+    text-align: center;
+    animation: fadeIn 1s ease forwards;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+.predictions-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: rgba(30, 30, 30, 0.9);
+    color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.predictions-table th,
+.predictions-table td {
+    padding: 12px 15px;
+    border: 1px solid #444;
+    text-align: left;
+}
+
+.predictions-table thead {
+    background-color: #ff6b81;
+    color: #fff;
+}
+
+.predictions-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: 0.3s ease;
+}
+
+.back-btn-wrapper {
+    margin-top: 30px;
+}
+
+.back-btn-wrapper .btn {
+    padding: 12px 20px;
+    background-color: #ff6b81;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.back-btn-wrapper .btn:hover {
+    background-color: #e0556d;
+}
