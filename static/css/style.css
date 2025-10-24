@@ -18,25 +18,33 @@ body {
     justify-content: space-between;
     align-items: center;
     background-color: rgba(20, 20, 20, 0.7);
-    padding: 15px 30px;
+    padding: 5px 20px; /* reduced padding for smaller height */
     position: sticky;
     top: 0;
-    z-index: 1000;
+    
+    height: 58px;
 }
 
-.navbar h1 {
-    margin: 0;
-    font-size: 24px;
+/* Logo and site name */
+.nav-logo {
+    display: flex;
+    align-items: center;
+}
+
+.nav-logo img {
+    display: inline-block;
+    width: 60px;  /* increased logo width */
+    height: 60px; /* increased logo height */
+}
+
+.nav-logo span {
+    font-size: 20px; /* adjust logo text size */
     color: #ff6b81;
-}
-
-.navbar a {
-    color: #f0f0f0;
-    text-decoration: none;
-    margin-left: 20px;
     font-weight: bold;
+    margin-left: 15px;
 }
 
+/* Navbar links */
 .nav-links {
     display: flex;
     margin-left: auto;
@@ -45,21 +53,27 @@ body {
 .nav-links a {
     color: #f0f0f0;
     text-decoration: none;
-    margin-left: 20px;
+    margin-left: 15px; /* spacing between links */
     font-weight: bold;
+    font-size: 18px;
 }
-
 
 /* === Title on Home Page === */
 .title-left {
-    position: absolute;
-    top: 120px;
-    left: 60px;
-    font-size: 54px;
+    position: relative;
+    top: 150px; /* vertical placement */
+    left: 50px;
+    font-size: 48px; /* smaller for better fit */
     font-weight: bold;
     color: white;
-    padding: 120px 25px;
+    padding: 20px;
     border-radius: 10px;
+    animation: fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateX(-50px); }
+    100% { opacity: 1; transform: translateX(0); }
 }
 
 /* === Form Container === */
@@ -77,16 +91,6 @@ h2 {
     text-align: center;
     margin-bottom: 20px;
 }
-
-.title-left {
-    animation: fadeIn 1s ease forwards;
-}
-
-@keyframes fadeIn {
-    0% { opacity: 0; transform: translateX(-50px); }
-    100% { opacity: 1; transform: translateX(0); }
-}
-
 
 form label {
     display: block;
@@ -109,7 +113,7 @@ form select {
     color: #fff;
 }
 
-
+/* Buttons */
 button {
     width: 100%;
     padding: 10px;
@@ -215,4 +219,141 @@ ul {
 
 .back-btn-wrapper .btn:hover {
     background-color: #e0556d;
+}
+
+/* === Home Page Background === */
+body.home-page {
+    background-image: url('../images/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    color: #f0f0f0;
+}
+
+/* === About Us Section for Home Page === */
+.about-us {
+    width: 100vw;                 /* full viewport width */
+    background-color: rgba(0, 0, 0, 0.5);
+    margin: 50px 0;               /* top and bottom spacing */
+    padding: 50px 0;              /* top and bottom padding */
+    border-radius: 0;
+    box-shadow: none;
+    position: relative;
+    left: 0;
+}
+
+/* Inner wrapper to center content */
+.about-us .about-content {
+    max-width: 1200px;            /* limits content width */
+    margin: 0 auto;               /* center horizontally */
+    padding: 0 20px;              /* side padding */
+    text-align: center;
+}
+
+.about-us h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #ff6b81;
+}
+
+.about-us p {
+    font-size: 16px;
+    color: #f0f0f0;
+    margin-bottom: 10px;
+}
+
+.about-us a {
+    color: #00bfff;
+    text-decoration: underline;
+}
+/* === Manage Users Page === */
+.manage-container {
+    max-width: 900px;
+    margin: 80px auto;
+    padding: 30px;
+    background-color: rgba(20, 20, 20, 0.8);
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(255, 107, 129, 0.4);
+    color: white;
+}
+
+.manage-container .title {
+    text-align: center;
+    color: #ff6b81;
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(0, 0, 0, 0.6);
+    margin-bottom: 40px;
+}
+
+.user-table th, .user-table td {
+    padding: 12px 15px;
+    border: 1px solid #444;
+    text-align: center;
+}
+
+.user-table thead {
+    background-color: #ff6b81;
+    color: white;
+}
+
+.user-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.delete-btn {
+    background-color: #ff6b81;
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background-color: #e0556d;
+}
+
+/* === Add User Form === */
+.add-user-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.add-user-form input {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #222;
+    color: white;
+}
+
+.add-btn {
+    background-color: #ff6b81;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.add-btn:hover {
+    background-color: #e0556d;
+}
+
+.subtitle {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #ff6b81;
 }

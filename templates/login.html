@@ -11,6 +11,12 @@
 
         <button type="submit">Login</button>
     </form>
+
+    <!-- Error message shows ONLY if 'error' exists -->
+    {% if error is defined %}
+        <p style="color: red; margin-top: 10px;">{{ error }}</p>
+    {% endif %}
+
     <p>New user? <a href="{{ url_for('register') }}">Register here</a></p>
 </div>
 {% endblock %}

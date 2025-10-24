@@ -1,10 +1,8 @@
 import os
 import uuid
 from datetime import datetime, timedelta
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
-from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
 from flask_login import (
     LoginManager, UserMixin, login_user, logout_user,
     login_required, current_user
@@ -21,7 +19,6 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret123'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
-
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 db = SQLAlchemy(app)
@@ -49,22 +46,18 @@ class MedicalImage(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 # ================= Load ML Model =================
-device = torch.device("cpu")  # Force CPU only
+device = torch.device("cpu")  # Force CPU
 
-# Define same architecture used during training
 model = models.efficientnet_b2(weights=None)
 in_features = model.classifier[1].in_features
 model.classifier = nn.Sequential(
     nn.Dropout(0.4),
     nn.Linear(in_features, 1)
 )
-
-# Load weights
 model.load_state_dict(torch.load("best_model.pth", map_location=device))
 model.to(device)
 model.eval()
 
-# Preprocessing
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
@@ -83,45 +76,7 @@ def predict(image_path):
         prob = torch.sigmoid(output).item()
         return "Cancer Detected" if prob > 0.5 else "No Cancer Detected"
 
-# ================= Secure Admin Panel =================
-class SecureModelView(ModelView):
-    column_exclude_list = ['password']
-    can_create = False
-    can_delete = True
-    can_edit = True
-
-    def is_accessible(self):
-        return current_user.is_authenticated and current_user.is_admin
-
-    def inaccessible_callback(self, name, **kwargs):
-        return redirect(url_for('admin_login'))
-
-admin = Admin(app, name='Admin Dashboard', template_mode='bootstrap4')
-admin.add_view(SecureModelView(User, db.session))
-admin.add_view(SecureModelView(MedicalImage, db.session))
-
-@app.route("/admin")
-@login_required
-def admin_redirect():
-    if current_user.is_admin:
-        return redirect("/admin/")
-    return redirect(url_for("admin_login"))
-    
-# ================= Admin Login =================
-@app.route("/admin_login", methods=["GET", "POST"])
-def admin_login():
-    if request.method == "POST":
-        email = request.form["email"]
-        password = request.form["password"]
-        user = User.query.filter_by(email=email, is_admin=True).first()
-
-        if user and check_password_hash(user.password, password):
-            login_user(user)
-            return redirect("/admin")
-        return "Invalid admin credentials"
-    return render_template("admin_login.html", title="Admin Login")
-
-# ================= Flask-Login User Loader =================
+# ================= Flask-Login =================
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -133,8 +88,9 @@ def index():
 
 @app.route("/home")
 def home():
-    return render_template("home.html", title="Home")
+    return render_template("home.html", title="Home", body_class="home-page")
 
+# ---------------- Register ----------------
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -143,8 +99,9 @@ def register():
         email = request.form["email"]
         password = generate_password_hash(request.form["password"])
 
-        if User.query.filter_by(username=username).first():
-            return "User already exists"
+        if User.query.filter((User.username == username) | (User.email == email)).first():
+            flash("Username or Email already exists.", "danger")
+            return redirect(url_for("register"))
 
         new_user = User(
             name=name,
@@ -154,29 +111,41 @@ def register():
         )
         db.session.add(new_user)
         db.session.commit()
+        flash("Registration successful. Login now.", "success")
         return redirect(url_for("login"))
 
     return render_template("register.html", title="Register")
 
+# ---------------- Login ----------------
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         email = request.form["email"]
         password = request.form["password"]
 
+        # Admin login
         user = User.query.filter_by(email=email).first()
+        if user and user.is_admin and check_password_hash(user.password, password):
+            login_user(user)
+            return redirect(url_for("manage_users"))
+
+        # Normal user login
         if user and check_password_hash(user.password, password):
             login_user(user)
             return redirect(url_for("prediction_page"))
-        return "Invalid credentials"
+
+        flash("Invalid credentials.", "danger")
+
     return render_template("login.html", title="Login")
 
+# ---------------- Logout ----------------
 @app.route("/logout")
 @login_required
 def logout():
     logout_user()
     return redirect(url_for("login"))
 
+# ---------------- Prediction ----------------
 @app.route("/prediction_page", methods=["GET", "POST"])
 @login_required
 def prediction_page():
@@ -210,13 +179,61 @@ def prediction_page():
     return render_template("prediction_page.html", title="Prediction",
                            result=result, image_name=image_name)
 
+# ---------------- Past Predictions ----------------
 @app.route("/past_predictions")
 @login_required
 def past_predictions():
-    predictions = MedicalImage.query.filter_by(
-        user_id=current_user.id
-    ).order_by(MedicalImage.timestamp.desc()).all()
+    predictions = MedicalImage.query.filter_by(user_id=current_user.id).order_by(MedicalImage.timestamp.desc()).all()
     return render_template("past_predictions.html", predictions=predictions, timedelta=timedelta)
+
+# ---------------- Admin Manage Users ----------------
+@app.route("/manage_users")
+@login_required
+def manage_users():
+    if not current_user.is_admin:
+        flash("Access denied.", "danger")
+        return redirect(url_for("login"))
+    users = User.query.filter(User.id != current_user.id).all()
+    return render_template("manage_users.html", users=users)
+
+@app.route("/add_user", methods=["GET", "POST"])
+@login_required
+def add_user():
+    if not current_user.is_admin:
+        flash("Access denied.", "danger")
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        name = request.form["name"]
+        username = request.form["username"]
+        email = request.form["email"]
+        password = generate_password_hash(request.form["password"])
+
+        if User.query.filter((User.username == username) | (User.email == email)).first():
+            flash("Username or Email already exists.", "danger")
+            return redirect(url_for("add_user"))
+
+        new_user = User(name=name, username=username, email=email, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+        flash("User added successfully.", "success")
+        return redirect(url_for("manage_users"))
+
+    return render_template("add_user.html")
+
+@app.route("/delete_user/<int:user_id>", methods=["POST"])
+@login_required
+def delete_user(user_id):
+    if not current_user.is_admin:
+        flash("Access denied.", "danger")
+        return redirect(url_for("login"))
+
+    user = User.query.get(user_id)
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+        flash("User deleted successfully.", "success")
+    return redirect(url_for("manage_users"))
 
 # ================= Run App =================
 if __name__ == "__main__":

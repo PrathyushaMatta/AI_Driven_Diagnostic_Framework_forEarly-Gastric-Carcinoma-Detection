@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+/* 🔥 Manage Users Page Styling */
+.manage-container {
+  max-width: 900px;
+  margin: 60px auto;
+  color: white;
+  background: rgba(20, 20, 20, 0.85);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 0 25px rgba(255, 71, 87, 0.4);
+  backdrop-filter: blur(10px);
+}
+
+.manage-container h2 {
+  text-align: center;
+  color: #ff4757;
+  margin-bottom: 25px;
+  text-shadow: 0 0 10px #ff4757;
+}
+
+.manage-container table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.manage-container th,
+.manage-container td {
+  padding: 12px 15px;
+  text-align: center;
+}
+
+.manage-container th {
+  background-color: #ff4757;
+  color: white;
+  font-weight: bold;
+}
+
+.manage-container tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.manage-container tr:hover {
+  background-color: rgba(255, 71, 87, 0.2);
+  transition: 0.3s;
+}
+
+.delete-btn {
+  background-color: #ff4757;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.delete-btn:hover {
+  background-color: #ff6b81;
+  box-shadow: 0 0 10px #ff6b81;
+}
+
+.add-btn {
+  background-color: #ff4757;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  float: right;
+  transition: 0.3s;
+}
+
+.add-btn:hover {
+  background-color: #ff6b81;
+  box-shadow: 0 0 10px #ff6b81;
+}
+</style>
+
+<div class="manage-container">
+  <h2>Manage Users</h2>
+
+  <a href="{{ url_for('add_user') }}" class="add-btn">➕ Add New User</a>
+  <br /><br />
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>
+          <form
+            action="{{ url_for('delete_user', user_id=user.id) }}"
+            method="POST"
+            style="display:inline;"
+          >
+            <button type="submit" class="delete-btn">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="5">No users found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

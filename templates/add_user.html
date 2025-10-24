@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+/* 🔥 Add User Page Styling */
+.add-user-container {
+  max-width: 500px;
+  margin: 70px auto;
+  padding: 35px;
+  background: rgba(20, 20, 20, 0.85);
+  border-radius: 15px;
+  box-shadow: 0 0 25px rgba(255, 71, 87, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+.add-user-container h2 {
+  text-align: center;
+  color: #ff4757;
+  text-shadow: 0 0 10px #ff4757;
+  margin-bottom: 25px;
+}
+
+.add-user-container label {
+  color: white;
+  font-weight: bold;
+}
+
+.add-user-container input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 6px;
+  background-color: #111;
+  color: white;
+  outline: none;
+  transition: 0.3s;
+}
+
+.add-user-container input:focus {
+  box-shadow: 0 0 10px #ff4757;
+  border: 1px solid #ff4757;
+}
+
+.add-user-container button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #ff4757;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.add-user-container button:hover {
+  background-color: #ff6b81;
+  box-shadow: 0 0 12px #ff6b81;
+}
+
+.back-link {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  color: #00bfff;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+</style>
+
+<div class="add-user-container">
+  <h2>Add New User</h2>
+
+  <form method="POST">
+    <label>Name</label>
+    <input type="text" name="name" required />
+
+    <label>Username</label>
+    <input type="text" name="username" required />
+
+    <label>Email</label>
+    <input type="email" name="email" required />
+
+    <label>Password</label>
+    <input type="password" name="password" required />
+
+    <button type="submit">Add User</button>
+  </form>
+
+  <a href="{{ url_for('manage_users') }}" class="back-link">⬅ Back to Manage Users</a>
+</div>
+{% endblock %}
